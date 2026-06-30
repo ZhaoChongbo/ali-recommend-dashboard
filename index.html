@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>阿里移动推荐 — 数据分析仪表盘</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+<style>
+/* ==========================================
+   ALI ANALYTICS DASHBOARD — Dark Luxury v6
+   Design: Glassmorphism + Geometric + Animation
+   ========================================== */
+:root {
+  --bg: #060b14;
+  --bg2: #0a1226;
+  --bg3: #0f1a33;
+  --glass: rgba(15,26,51,0.7);
+  --glass-border: rgba(59,130,246,0.15);
+  --ink: #e8edf5;
+  --ink2: #c4cdd9;
+  --muted: #5a6a85;
+  --rule: rgba(255,255,255,0.06);
+  --accent: #3b82f6;
+  --accent2: #f59e0b;
+  --accent-glow: rgba(59,130,246,0.3);
+  --gold: #f59e0b;
+  --gold-glow: rgba(245,158,11,0.3);
+  --success: #10b981;
+  --danger: #ef4444;
+  --bg4: #1a2540;
+  --font: 'Segoe UI', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+  --max: 1320px;
+  --nav-h: 56px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + 24px)}
+body{
+  font-family:var(--font);color:var(--ink);background:var(--bg);
+  line-height:1.65;-webkit-font-smoothing:antialiased;
+  padding-top:var(--nav-h);
+  background-image:
+    radial-gradient(ellipse at 25% 15%, rgba(59,130,246,0.06) 0%, transparent 55%),
+    radial-gradient(ellipse at 75% 40%, rgba(245,158,11,0.04) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 85%, rgba(16,185,129,0.04) 0%, transparent 55%);
+}
+
+/* ===== NAV ===== */
+.topnav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-h);
+  background:rgba(6,11,20,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:center;padding:0 24px;
+}
+.topnav-inner{display:flex;align-items:center;gap:2px;max-width:var(--max);width:100%;overflow-x:auto;scrollbar-width:none}
+.topnav-inner::-webkit-scrollbar{display:none}
+.topnav-brand{font-family:var(--font-mono);font-size:0.68rem;font-weight:700;color:var(--accent);letter-spacing:0.1em;white-space:nowrap;margin-right:20px;flex-shrink:0}
+.topnav a{display:block;padding:7px 16px;font-size:0.78rem;font-weight:600;color:var(--muted);text-decoration:none;border-radius:8px;white-space:nowrap;flex-shrink:0;transition:all .2s}
+.topnav a:hover,.topnav a.active{color:var(--ink2);background:var(--glass)}
+
+/* ===== HERO ===== */
+.hero{
+  position:relative;padding:100px 24px 80px;text-align:center;overflow:hidden;
+  background:linear-gradient(180deg, #060b14 0%, #0a1630 40%, #0d1a38 100%);
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(59,130,246,0.12) 0%, transparent 40%),
+    radial-gradient(circle at 70% 60%, rgba(245,158,11,0.08) 0%, transparent 40%),
+    radial-gradient(circle at 50% 90%, rgba(16,185,129,0.06) 0%, transparent 30%);
+  animation:heroBreath 6s ease-in-out infinite;
+}
+@keyframes heroBreath{0%,100%{opacity:.6}50%{opacity:1}}
+.hero-inner{position:relative;z-index:1;max-width:var(--max);margin:0 auto}
+.hero-badge{
+  display:inline-block;padding:7px 22px;border:1px solid rgba(59,130,246,0.4);
+  border-radius:24px;font-size:0.78rem;font-weight:700;font-family:var(--font-mono);
+  color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;
+  margin-bottom:28px;background:rgba(59,130,246,0.06);
+  backdrop-filter:blur(12px);
+}
+.hero h1{
+  font-size:clamp(2.4rem,5.5vw,3.8rem);font-weight:700;line-height:1.1;
+  margin-bottom:20px;letter-spacing:-0.02em;color:#fff;
+}
+.hero h1 .accent{color:var(--accent)}
+.hero h1 .gold{color:var(--gold)}
+.hero-sub{
+  font-size:1.05rem;color:var(--muted);max-width:680px;margin:0 auto 56px;line-height:1.7;
+}
+
+/* KPI Row */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;max-width:var(--max);margin:0 auto}
+.kpi-card{
+  background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;
+  padding:32px 20px;text-align:center;transition:all .3s;position:relative;overflow:hidden;
+  backdrop-filter:blur(16px);
+}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:16px 16px 0 0}
+.kpi-card.accent::before{background:var(--accent)}
+.kpi-card.gold::before{background:var(--gold)}
+.kpi-card.success::before{background:var(--success)}
+.kpi-card.danger::before{background:var(--danger)}
+.kpi-card:hover{transform:translateY(-4px);border-color:rgba(59,130,246,0.35);box-shadow:0 16px 48px rgba(0,0,0,.4)}
+.kpi-label{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:10px}
+.kpi-value{font-size:2.6rem;font-weight:700;color:#fff;line-height:1.15;font-variant-numeric:tabular-nums}
+.kpi-sub{font-size:0.78rem;color:var(--muted);margin-top:4px}
+
+/* ===== SECTION ===== */
+.section{padding:80px 24px;position:relative}
+.section+.section{border-top:1px solid var(--rule)}
+.section.alt{background:var(--bg2)}
+.section-inner{max-width:var(--max);margin:0 auto}
+.section-header{margin-bottom:52px;text-align:center}
+.section-num{font-family:var(--font-mono);font-size:0.72rem;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;font-weight:700}
+.section-header h2{font-size:2.2rem;font-weight:700;color:#fff;letter-spacing:-0.01em;margin-bottom:10px}
+.section-header .subtitle{font-size:0.95rem;color:var(--muted);max-width:620px;margin:0 auto}
+
+/* ===== INSIGHT GRID ===== */
+.insight-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:0}
+.insight-card{
+  background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;
+  padding:28px 22px;transition:all .3s;backdrop-filter:blur(12px);position:relative;
+}
+.insight-card:hover{border-color:rgba(59,130,246,0.3);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.insight-card .icon{font-size:1.6rem;margin-bottom:16px;display:block}
+.insight-card h4{font-size:1rem;font-weight:700;color:#fff;margin-bottom:10px}
+.insight-card p{font-size:0.85rem;color:var(--muted);line-height:1.6}
+
+/* ===== TWO COL ===== */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px}
+.two-col-3-7{display:grid;grid-template-columns:3fr 7fr;gap:24px}
+
+/* ===== CHART ===== */
+.chart-figure{
+  margin:0;background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:14px;padding:28px;backdrop-filter:blur(12px);
+}
+.chart-figure figcaption{font-size:0.9rem;font-weight:700;color:var(--ink2);margin-bottom:20px;letter-spacing:-0.01em}
+.chart-container{width:100%;min-height:420px}
+.chart-container.tall{min-height:540px}
+.chart-container.short{min-height:300px}
+
+/* ===== METRIC ROW ===== */
+.metric-row{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:28px}
+.metric-item{
+  background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;
+  padding:24px 18px;text-align:center;backdrop-filter:blur(12px);transition:all .3s;
+}
+.metric-item:hover{transform:translateY(-2px);border-color:rgba(59,130,246,0.3);box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.metric-item .label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:8px}
+.metric-item .value{font-size:1.7rem;font-weight:700;color:#fff;font-variant-numeric:tabular-nums}
+.metric-item .delta{font-size:0.78rem;color:var(--success);margin-top:4px}
+
+/* ===== TABLE ===== */
+.table-wrap{overflow-x:auto;border:1px solid var(--glass-border);border-radius:14px;background:var(--glass);margin-bottom:24px;backdrop-filter:blur(12px)}
+table{width:100%;border-collapse:collapse;font-size:0.84rem}
+table thead{position:sticky;top:0;z-index:1}
+table th{background:rgba(26,37,64,0.8);color:var(--ink2);font-weight:700;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.05em;padding:14px 18px;text-align:left;border-bottom:2px solid var(--rule)}
+table td{padding:12px 18px;border-bottom:1px solid var(--rule);color:var(--ink)}
+table tbody tr:hover{background:rgba(59,130,246,0.04)}
+table .num{font-family:var(--font-mono);text-align:right}
+table .highlight{color:var(--accent);font-weight:700}
+
+/* ===== CALLOUT ===== */
+.callout{border-left:4px solid var(--accent);background:var(--glass);border-radius:0 12px 12px 0;padding:20px 26px;margin:24px 0;backdrop-filter:blur(12px)}
+.callout.gold{border-left-color:var(--gold)}
+.callout.success{border-left-color:var(--success)}
+.callout p{font-size:0.9rem;color:var(--ink2);line-height:1.6}
+.callout strong{color:#fff}
+
+/* ===== ARCH DIAGRAM (CSS, no Mermaid) ===== */
+.arch-diagram{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:24px}
+.arch-layer{background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;padding:24px 20px;text-align:center;backdrop-filter:blur(12px);transition:all .3s}
+.arch-layer:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.arch-layer .layer-icon{font-size:2rem;margin-bottom:12px}
+.arch-layer .layer-title{font-weight:700;font-size:0.95rem;color:#fff;margin-bottom:8px}
+.arch-layer .layer-items{font-size:0.78rem;color:var(--muted);line-height:1.8}
+.arch-layer.accent{border-color:rgba(59,130,246,0.4)}
+.arch-layer.gold{border-color:rgba(245,158,11,0.4)}
+.arch-layer.success{border-color:rgba(16,185,129,0.4)}
+.arch-layer.muted{border-color:rgba(100,116,139,0.4)}
+.arch-arrows{display:flex;justify-content:center;align-items:center;gap:40px;margin:16px 0 28px;color:var(--muted);font-size:1.4rem;letter-spacing:0.3em}
+
+/* ===== STRATEGY CARDS ===== */
+.strategy-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-bottom:24px}
+.strategy-card{
+  background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;
+  padding:28px 24px;backdrop-filter:blur(12px);transition:all .3s;position:relative;overflow:hidden;
+}
+.strategy-card::after{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:14px 0 0 14px}
+.strategy-card:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.strategy-card.p0::after{background:var(--danger)}
+.strategy-card.p1::after{background:var(--gold)}
+.strategy-card.p2::after{background:var(--accent)}
+.strategy-card .strat-tag{display:inline-block;padding:3px 12px;border-radius:12px;font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px}
+.strategy-card.p0 .strat-tag{background:rgba(239,68,68,0.15);color:var(--danger)}
+.strategy-card.p1 .strat-tag{background:rgba(245,158,11,0.15);color:var(--gold)}
+.strategy-card.p2 .strat-tag{background:rgba(59,130,246,0.15);color:var(--accent)}
+.strategy-card h4{font-size:1.05rem;font-weight:700;color:#fff;margin-bottom:8px}
+.strategy-card .strat-meta{font-size:0.82rem;color:var(--muted);line-height:1.6}
+
+/* ===== ROLLING NUMBERS ===== */
+@keyframes countIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== SCROLL REVEAL ===== */
+.reveal{opacity:0;transform:translateY(28px);transition:all .7s cubic-bezier(.22,1,.36,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+.reveal-delay-4{transition-delay:.4s}
+
+/* ===== FOOTER ===== */
+footer{border-top:1px solid var(--rule);padding:48px 24px;text-align:center;font-size:0.82rem;color:var(--muted);background:var(--bg2)}
+footer .sources{max-width:var(--max);margin:0 auto 32px;text-align:left}
+footer .sources h2{font-size:1rem;font-weight:700;color:#fff;margin-bottom:14px}
+footer .sources ol{padding-left:1.2rem;font-size:0.8rem;color:var(--muted)}
+footer .sources li{margin-bottom:.6rem;overflow-wrap:break-word}
+footer .sources .src-url{display:block;margin-top:.2rem;font-size:.76rem;color:var(--accent);word-break:break-all}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1100px){
+  .kpi-grid,.insight-grid{grid-template-columns:repeat(2,1fr)}
+  .two-col,.two-col-3-7,.arch-diagram,.strategy-grid{grid-template-columns:1fr}
+  .metric-row{grid-template-columns:repeat(2,1fr)}
+  .chart-container{min-height:380px}
+  .chart-container.tall{min-height:460px}
+}
+@media(max-width:640px){
+  .kpi-grid,.insight-grid,.metric-row{grid-template-columns:1fr}
+  .hero{padding:64px 16px 48px}
+  .hero h1{font-size:1.8rem}
+  .section{padding:48px 16px}
+  .section-header h2{font-size:1.5rem}
+  .kpi-value{font-size:1.8rem}
+  .chart-container{min-height:320px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <span class="topnav-brand">◈ ALI ANALYTICS</span>
+    <a href="#summary">核心发现</a>
+    <a href="#basic">基础分析</a>
+    <a href="#user">用户行为</a>
+    <a href="#product">商品分析</a>
+    <a href="#prediction">购买预测</a>
+    <a href="#business">业务策略</a>
+    <a href="#deployment">技术架构</a>
+    <a href="#limitations">改进路线</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Data Analytics · v6</div>
+    <h1>阿里移动推荐算法<br><span class="accent">深度洞察</span>与<span class="gold">策略引擎</span></h1>
+    <p class="hero-sub">基于天池竞赛 10,000 用户 × 31 天 × 1,226 万条行为事件，融合基础分析、用户行为、商品分析、预测分析四大引擎，输出可落地的业务增长策略。</p>
+    <div class="kpi-grid">
+      <div class="kpi-card accent reveal"><div class="kpi-label">用户规模</div><div class="kpi-value" data-count="10000">10,000</div><div class="kpi-sub">抽样用户</div></div>
+      <div class="kpi-card gold reveal reveal-delay-1"><div class="kpi-label">行为事件</div><div class="kpi-value" data-count="12.26">12.26M</div><div class="kpi-sub">31 天窗口</div></div>
+      <div class="kpi-card success reveal reveal-delay-2"><div class="kpi-label">预测 AUC</div><div class="kpi-value" data-count="0.9465">0.9465</div><div class="kpi-sub">XGBoost · 5-Fold CV</div></div>
+      <div class="kpi-card danger reveal reveal-delay-3"><div class="kpi-label">因果效应</div><div class="kpi-value">+6.76pp</div><div class="kpi-sub">加购→购买 · PSM</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SUMMARY -->
+<section class="section" id="summary" style="padding-top:56px;border-top:none">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-num">Executive Summary</div>
+      <h2>核心发现</h2>
+      <p class="subtitle">四个分析模块的量化结论，每条均有数据支撑。</p>
+    </div>
+    <div class="insight-grid">
+      <div class="insight-card reveal"><span class="icon">📋</span><h4>基础分析</h4><p>88.9% 用户有购买行为，<strong>收藏渗透率仅 67.3%</strong>。双12当天购买人数是日常 2.6 倍，效应次日即回落。</p></div>
+      <div class="insight-card reveal reveal-delay-1"><span class="icon">🧪</span><h4>用户行为</h4><p>加购是唯一显著因果驱动力：<strong>cart_days OR=3.22</strong>，PSM ATE=<strong>+6.76pp</strong>。收藏ATE不显著。</p></div>
+      <div class="insight-card reveal reveal-delay-2"><span class="icon">🏷️</span><h4>商品分析</h4><p>品类1863转化率最高（<strong>20.88%</strong>，OR=2.53），5232和6344接近其水平。GEE控制用户内偏差。</p></div>
+      <div class="insight-card reveal reveal-delay-3"><span class="icon">🎯</span><h4>预测分析</h4><p>XGBoost AUC=<strong>0.9465</strong>（5折CV），68.1% 正样本训练期无交互——模型学的是<strong>热门商品+活跃用户</strong>。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 1: BASIC -->
+<section class="section alt" id="basic">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-num">Section 01</div>
+      <h2>基础分析</h2>
+      <p class="subtitle">数据规模、行为分布、时间趋势、大促效应——建立对数据集的整体认知。</p>
+    </div>
+
+    <div class="two-col reveal">
+      <div class="chart-figure"><figcaption>用户行为覆盖率（N=10,000）</figcaption><div id="chart-funnel-coverage" class="chart-container"></div></div>
+      <div class="chart-figure"><figcaption>Top5 品类购买转化率</figcaption><div id="chart-category-conversion" class="chart-container"></div></div>
+    </div>
+
+    <div class="reveal"><div class="chart-figure" style="margin-bottom:24px"><figcaption>每日浏览/购买趋势 &amp; 转化率变化（11.18 – 12.18）</figcaption><div id="chart-daily-trend" class="chart-container tall"></div></div></div>
+
+    <div class="two-col reveal">
+      <div class="chart-figure"><figcaption>三阶段关键指标对比（蓄水→爆发→长尾）</figcaption><div id="chart-macro-periods" class="chart-container"></div></div>
+      <div class="chart-figure"><figcaption>周度行为模式（周一至周日）</figcaption><div id="chart-weekly-pattern" class="chart-container"></div></div>
+    </div>
+
+    <div class="reveal"><div class="chart-figure" style="margin-bottom:24px"><figcaption>品类浏览-转化率分布（8,916个品类真实数据）</figcaption><div id="chart-user-segment" class="chart-container"></div></div></div>
+
+    <div class="table-wrap reveal">
+      <table>
+        <thead><tr><th>宏观因素</th><th>数据表现</th><th>对分析的影响</th><th>处理建议</th></tr></thead>
+        <tbody>
+          <tr><td><strong>双十二大促</strong></td><td>转化率 2.17×，购买 2.58×</td><td class="highlight">行为模式结构性偏移</td><td>引入促销日历特征；分段建模</td></tr>
+          <tr><td><strong>周末效应</strong></td><td>周末转化率 22.7%，低于工作日 23.7%</td><td>周五受12.12影响（转化率 29.6%）</td><td>添加 day_of_week 特征</td></tr>
+          <tr><td><strong>12月电商旺季</strong></td><td>全月购买覆盖率 88.9%</td><td>样本为"活跃用户"，结论外推需谨慎</td><td>标注"活跃用户"场景</td></tr>
+          <tr><td><strong>移动端特有</strong></td><td>碎片化浏览，31天窗口内行为密集</td><td>PC端策略不可直接迁移</td><td>单独分析移动端特征</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout reveal"><p><strong>关键洞察：</strong>双12当日转化率 50.49%，是日常均值（23.3%）的 2.17 倍。大促前 2 天浏览激增但转化率骤降至 21%——用户存在明显的"加购等大促"蓄水行为。品类 1863 和 6344 转化率最高（~20%），应作为重点推荐品类。</p></div>
+  </div>
+</section>
+
+<!-- SECTION 2: USER BEHAVIOR -->
+<section class="section" id="user">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-num">Section 02</div>
+      <h2>用户行为分析</h2>
+      <p class="subtitle">用户级 LR 识别购买驱动因子 + PSM 因果推断区分「相关性」与「因果性」。</p>
+    </div>
+
+    <div class="two-col reveal">
+      <div class="chart-figure">
+        <figcaption>用户级 LR 关键系数（N=10,000）</figcaption>
+        <div class="table-wrap" style="margin:0;border:none;background:transparent;max-height:320px">
+          <table>
+            <thead><tr><th>特征</th><th>LR系数</th><th>Odds Ratio</th><th>p值</th><th>解读</th></tr></thead>
+            <tbody>
+              <tr><td>cart_days</td><td class="num">+1.1688</td><td class="num">3.22</td><td class="num">&lt;0.001</td><td>加购天数每+1，购买概率×3.22</td></tr>
+              <tr><td>active_days</td><td class="num">+0.9615</td><td class="num">2.62</td><td class="num">&lt;0.001</td><td>活跃天数每+1，购买概率×2.62</td></tr>
+              <tr><td>fav_days</td><td class="num">-0.0059</td><td class="num">0.99</td><td class="num">0.87</td><td>收藏天数影响不显著</td></tr>
+              <tr><td colspan="5" style="color:var(--muted);font-size:0.78rem">训练AUC=0.8468，测试AUC=0.8441。已排除browse_days（共线）和buy_days（泄漏）。</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="chart-figure"><figcaption>PSM 匹配效果（加购→购买，有放回卡尺=0.05）</figcaption><div id="chart-psm-match" class="chart-container"></div></div>
+    </div>
+
+    <div class="table-wrap reveal">
+      <table>
+        <thead><tr><th>Treatment</th><th>T组</th><th>C组匹配</th><th>C去重</th><th>匹配率</th><th>ATE</th><th>95% CI</th><th>显著性</th></tr></thead>
+        <tbody>
+          <tr><td><strong>加购→购买</strong></td><td class="num">1,021</td><td class="num">1,021条</td><td class="num">514人</td><td class="num highlight">100%</td><td class="num highlight">+6.76pp</td><td class="num">[2.35, 10.58]</td><td class="highlight">显著</td></tr>
+          <tr><td><strong>收藏→购买</strong></td><td class="num">828</td><td class="num">828条</td><td class="num">447人</td><td class="num highlight">100%</td><td class="num">+4.11pp</td><td class="num">[-0.49, 8.82]</td><td>不显著</td></tr>
+          <tr><td colspan="8" style="color:var(--muted);font-size:0.78rem">Treatment期11.18-12.03（16天），Outcome期12.04-12.18（15天）。排除Treatment期已购买7,455人，剩余2,545人。SMD全部&lt;0.1。</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout reveal"><p><strong>关键洞察：</strong>加购ATE在4种敏感性分析下均稳定显著（6.76-10.70pp），收藏ATE均不显著（CI跨0）。收藏与购买是「相关性」而非「因果性」——控制活跃度、浏览等混杂因素后，收藏行为本身不带来额外购买增量。</p></div>
+  </div>
+</section>
+
+<!-- SECTION 3: PRODUCT -->
+<section class="section alt" id="product">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-num">Section 03</div>
+      <h2>商品分析</h2>
+      <p class="subtitle">GEE（广义估计方程）按用户ID聚类，控制同一用户浏览多品类导致的样本不独立问题。</p>
+    </div>
+
+    <div class="table-wrap reveal">
+      <table>
+        <thead><tr><th>品类</th><th>浏览用户</th><th>购买用户</th><th>转化率</th><th>加购→购买</th><th>GEE OR</th><th>显著性</th></tr></thead>
+        <tbody>
+          <tr><td class="highlight">1863</td><td class="num">5,995</td><td class="num">1,252</td><td class="num highlight">20.88%</td><td class="num">61.34%</td><td class="num highlight">2.53</td><td>***</td></tr>
+          <tr><td>6513</td><td class="num">5,281</td><td class="num">698</td><td class="num">13.22%</td><td class="num">43.01%</td><td class="num">1.46</td><td>***</td></tr>
+          <tr><td>5399</td><td class="num">5,310</td><td class="num">651</td><td class="num">12.26%</td><td class="num">45.49%</td><td class="num">1.37</td><td>***</td></tr>
+          <tr><td>5027</td><td class="num">5,497</td><td class="num">627</td><td class="num">11.41%</td><td class="num">45.97%</td><td class="num">1.26</td><td>***</td></tr>
+          <tr><td>13230</td><td class="num">5,617</td><td class="num">564</td><td class="num">10.04%</td><td class="num">40.49%</td><td class="num">1.09</td><td>*</td></tr>
+          <tr><td colspan="7" style="color:var(--muted);font-size:0.78rem">正样本=浏览且买过（79,863对），负样本=浏览但没买（818,291对），总898,154条。参照组：其他品类（均值约8.3%）。品类5232（19.21%）和6344（19.87%）接近1863。</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout reveal"><p><strong>关键洞察：</strong>品类1863转化率最高（20.88%），但5232和6344仅差约1个百分点，并非1863一家独大。建议提取三个品类的共同商品属性，建立「高转化商品画像」指导选品。品类13230浏览最多但转化率最低——高浏览≠高转化。</p></div>
+  </div>
+</section>
+
+<!-- SECTION 4: PREDICTION -->
+<section class="section" id="prediction">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-num">Section 04</div>
+      <h2>T+1 购买预测</h2>
+      <p class="subtitle">XGBoost + 四层特征工程 + 分层5折交叉验证，每折同时跑 LR Baseline 对比。</p>
+    </div>
+
+    <div class="metric-row reveal">
+      <div class="metric-item"><div class="label">AUC (Mean±SD)</div><div class="value">0.9465</div><div class="delta">± 0.0054</div></div>
+      <div class="metric-item"><div class="label">F1 Score</div><div class="value">0.7475</div><div class="delta">± 0.0096</div></div>
+      <div class="metric-item"><div class="label">Average Precision</div><div class="value">0.8621</div><div class="delta">± 0.0115</div></div>
+      <div class="metric-item"><div class="label">XGBoost vs LR</div><div class="value">+12.4%</div><div class="delta">AUC 提升</div></div>
+    </div>
+
+    <div class="two-col reveal">
+      <div class="chart-figure"><figcaption>特征重要性 Top10（XGBoost Gain）</figcaption><div id="chart-feature-importance" class="chart-container"></div></div>
+      <div class="chart-figure"><figcaption>模型对比：XGBoost vs Logistic Regression</figcaption><div id="chart-model-comparison" class="chart-container"></div></div>
+    </div>
+
+    <div class="callout gold reveal"><p><strong>⚠️ 数据窗口局限：</strong>31 天训练窗口 74% 处于大促前（11.18-12.10），T+1 标签（12.18）是大促后第 6 天——<strong>模型学到的是"大促月"行为规律，而非日常规律</strong>。建议引入促销日历特征，并在非大促月份数据上验证泛化能力。</p></div>
+
+    <div class="callout reveal"><p><strong>建模要点：</strong>单日标签（12.18），5折分层CV确保正负比例一致，scale_pos_weight 处理1:5类别不平衡。68.1% 正样本训练期无交互——冷启动问题需引入商品属性侧特征。</p></div>
+  </div>
+</section>
+
+<!-- SECTION 5: BUSINESS -->
+<section class="section alt" id="business">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-num">Section 05</div>
+      <h2>业务策略</h2>
+      <p class="subtitle">从分析到行动——量化业务影响，设计可落地的推荐策略。</p>
+    </div>
+
+    <div class="callout success reveal"><p><strong>业务价值：</strong>加购行为对购买有 +6.76pp 的因果效应（95% CI显著）。8,614 名用户（86.1%）有过加购行为，若通过推荐策略进一步提升加购渗透率，可转化为增量购买。具体 GMV 影响需结合客单价和 AB 实验数据校准。</p></div>
+
+    <div class="strategy-grid reveal">
+      <div class="strategy-card p0"><span class="strat-tag">P0 · 最高优先</span><h4>加购助推</h4><div class="strat-meta">目标：浏览≥3次未加购用户<br>触发：浏览同一品类≥3次/7天<br>预期：因果效应 +6.76pp（需AB验证）</div></div>
+      <div class="strategy-card p1"><span class="strat-tag">P1 · 高优先</span><h4>大促蓄水</h4><div class="strat-meta">目标：高活跃低转化用户<br>触发：浏览频次>P75，转化率<P25<br>窗口：12.10-12.11蓄水黄金期</div></div>
+      <div class="strategy-card p2"><span class="strat-tag">P2 · 中优先</span><h4>品类推荐</h4><div class="strat-meta">目标：全量用户<br>策略：优先推荐品类1863/6344/5232<br>品类1863转化率20.88%</div></div>
+      <div class="strategy-card p2"><span class="strat-tag">P2 · 中优先</span><h4>冷启动特征</h4><div class="strat-meta">目标：新用户/无交互用户<br>策略：引入商品属性特征<br>覆盖68.1%预测正样本</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 6: DEPLOYMENT -->
+<section class="section" id="deployment">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-num">Section 06</div>
+      <h2>技术架构</h2>
+      <p class="subtitle">从离线分析到在线推理，完整的技术栈与部署架构。</p>
+    </div>
+
+    <div class="arch-diagram reveal">
+      <div class="arch-layer accent"><div class="layer-icon">🗄️</div><div class="layer-title">数据层</div><div class="layer-items">行为日志采集<br>特征工程 Pipeline<br>Feature Store</div></div>
+      <div class="arch-layer gold"><div class="layer-icon">⚙️</div><div class="layer-title">训练层</div><div class="layer-items">XGBoost 模型训练<br>模型评估 & CV<br>Model Registry</div></div>
+      <div class="arch-layer success"><div class="layer-icon">🚀</div><div class="layer-title">推理层</div><div class="layer-items">实时特征查询<br>模型推理 API<br>推荐排序服务</div></div>
+      <div class="arch-layer muted"><div class="layer-icon">📡</div><div class="layer-title">监控层</div><div class="layer-items">数据漂移检测<br>模型性能监控<br>业务指标看板</div></div>
+    </div>
+    <div class="arch-arrows reveal">数据层 → 训练层 → 推理层 ⇄ 监控层</div>
+
+    <div class="callout reveal"><p><strong>技术栈：</strong>Python (Pandas / NumPy / scikit-learn / XGBoost) → 特征工程 + 模型训练 · statsmodels → GEE + PSM 因果推断 · ECharts → 可视化 · GitHub Pages → 部署。推荐后续演进：引入商品属性特征 → 在线学习框架 → AB实验闭环。</p></div>
+  </div>
+</section>
+
+<!-- SECTION 7: LIMITATIONS -->
+<section class="section alt" id="limitations">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-num">Section 07</div>
+      <h2>局限性与改进路线</h2>
+      <p class="subtitle">坦诚面对当前分析的边界，明确下一步改进方向。</p>
+    </div>
+
+    <div class="insight-grid reveal">
+      <div class="insight-card"><span class="icon">⚠️</span><h4>数据局限</h4><p>仅含行为数据，缺少商品属性（价格、品牌、类目深度）、用户画像。68.1% 预测正样本无交互，冷启动问题突出。</p></div>
+      <div class="insight-card"><span class="icon">⚠️</span><h4>因果局限</h4><p>无商品价格字段，无法排除价格混淆效应。PSM仅控制可观测混杂，未观测混杂（如价格敏感度）可能影响ATE。</p></div>
+      <div class="insight-card"><span class="icon">⚠️</span><h4>落地局限</h4><p>ATE是群体平均效应，不等于个体策略效果。策略需通过AB实验验证，离线结论不可直接作为线上预期。</p></div>
+    </div>
+
+    <div class="callout gold reveal" style="margin-top:24px"><p><strong>改进路线图：</strong>Phase 1（短期）→ 引入商品属性特征，解决68.1%冷启动问题 · Phase 2（中期）→ AB实验验证因果效应，分别评估大促期与日常期ATE · Phase 3（长期）→ 在线学习框架 + 实时特征 + 促销日历特征。</p></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="sources">
+    <h2>数据来源与参考</h2>
+    <ol>
+      <li><span>天池竞赛 — 阿里移动推荐算法数据集. 2014.11.18–12.18, 10,000用户 × 2,876,947商品 × 12,256,906行为事件.</span><span class="src-url">https://tianchi.aliyun.com/dataset/</span></li>
+      <li><span>Chen, T. & Guestrin, C. XGBoost: A Scalable Tree Boosting System. KDD 2016.</span><span class="src-url">https://arxiv.org/abs/1603.02754</span></li>
+      <li><span>Rosenbaum, P.R. & Rubin, D.B. The Central Role of the Propensity Score. Biometrika 1983.</span><span class="src-url">https://doi.org/10.1093/biomet/70.1.41</span></li>
+      <li><span>Liang, K.Y. & Zeger, S.L. Longitudinal Data Analysis Using Generalized Linear Models. Biometrika 1986.</span><span class="src-url">https://doi.org/10.1093/biomet/73.1.13</span></li>
+    </ol>
+  </div>
+  <div class="copyright"><p>© 2026 · Ali Mobile Recommendation Analytics Dashboard · Built with ECharts</p></div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="assets/echarts.min.js"></script>
+<script src="assets/charts.js"></script>
+<script>
+// Scroll reveal animation
+(function(){
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){e.target.classList.add('visible')}
+    });
+  },{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(function(el){observer.observe(el)});
+})();
+
+// Active nav highlight
+(function(){
+  var sections = document.querySelectorAll('section[id]');
+  var navLinks = document.querySelectorAll('.topnav a');
+  window.addEventListener('scroll',function(){
+    var current = '';
+    sections.forEach(function(s){
+      if(window.scrollY >= s.offsetTop - 100){current = s.getAttribute('id')}
+    });
+    navLinks.forEach(function(a){
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+})();
+</script>
+</body>
+</html>
