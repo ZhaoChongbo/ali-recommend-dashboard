@@ -44,7 +44,10 @@ body{
     radial-gradient(ellipse at 25% 15%, rgba(59,130,246,0.06) 0%, transparent 55%),
     radial-gradient(ellipse at 75% 40%, rgba(245,158,11,0.04) 0%, transparent 55%),
     radial-gradient(ellipse at 50% 85%, rgba(16,185,129,0.04) 0%, transparent 55%);
+  overflow-x:hidden;
 }
+/* Particle canvas layer */
+#particles-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.5}
 
 /* ===== NAV ===== */
 .topnav{
@@ -62,6 +65,7 @@ body{
 .hero{
   position:relative;padding:100px 24px 80px;text-align:center;overflow:hidden;
   background:linear-gradient(180deg, #060b14 0%, #0a1630 40%, #0d1a38 100%);
+  transform:translateZ(0);
 }
 .hero::before{
   content:'';position:absolute;inset:0;
@@ -71,7 +75,7 @@ body{
     radial-gradient(circle at 50% 90%, rgba(16,185,129,0.06) 0%, transparent 30%);
   animation:heroBreath 6s ease-in-out infinite;
 }
-@keyframes heroBreath{0%,100%{opacity:.6}50%{opacity:1}}
+@keyframes heroBreath{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.02)}}
 .hero-inner{position:relative;z-index:1;max-width:var(--max);margin:0 auto}
 .hero-badge{
   display:inline-block;padding:7px 22px;border:1px solid rgba(59,130,246,0.4);
@@ -94,36 +98,44 @@ body{
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;max-width:var(--max);margin:0 auto}
 .kpi-card{
   background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;
-  padding:32px 20px;text-align:center;transition:all .3s;position:relative;overflow:hidden;
-  backdrop-filter:blur(16px);
+  padding:32px 20px;text-align:center;transition:all .4s cubic-bezier(.22,1,.36,1);position:relative;overflow:hidden;
+  backdrop-filter:blur(16px);z-index:1;
 }
 .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:16px 16px 0 0}
+.kpi-card::after{content:'';position:absolute;inset:-1px;border-radius:16px;opacity:0;transition:opacity .5s;z-index:-1}
 .kpi-card.accent::before{background:var(--accent)}
+.kpi-card.accent::after{background:radial-gradient(ellipse at center, rgba(59,130,246,0.12) 0%, transparent 70%)}
 .kpi-card.gold::before{background:var(--gold)}
+.kpi-card.gold::after{background:radial-gradient(ellipse at center, rgba(245,158,11,0.12) 0%, transparent 70%)}
 .kpi-card.success::before{background:var(--success)}
+.kpi-card.success::after{background:radial-gradient(ellipse at center, rgba(16,185,129,0.12) 0%, transparent 70%)}
 .kpi-card.danger::before{background:var(--danger)}
-.kpi-card:hover{transform:translateY(-4px);border-color:rgba(59,130,246,0.35);box-shadow:0 16px 48px rgba(0,0,0,.4)}
+.kpi-card.danger::after{background:radial-gradient(ellipse at center, rgba(239,68,68,0.12) 0%, transparent 70%)}
+.kpi-card:hover{transform:translateY(-6px) scale(1.02);border-color:rgba(59,130,246,0.4);box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.kpi-card:hover::after{opacity:1}
 .kpi-label{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:10px}
 .kpi-value{font-size:2.6rem;font-weight:700;color:#fff;line-height:1.15;font-variant-numeric:tabular-nums}
 .kpi-sub{font-size:0.78rem;color:var(--muted);margin-top:4px}
 
 /* ===== SECTION ===== */
-.section{padding:80px 24px;position:relative}
+.section{padding:80px 24px;position:relative;z-index:1}
 .section+.section{border-top:1px solid var(--rule)}
 .section.alt{background:var(--bg2)}
 .section-inner{max-width:var(--max);margin:0 auto}
 .section-header{margin-bottom:52px;text-align:center}
 .section-num{font-family:var(--font-mono);font-size:0.72rem;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;font-weight:700}
-.section-header h2{font-size:2.2rem;font-weight:700;color:#fff;letter-spacing:-0.01em;margin-bottom:10px}
+.section-header h2{font-size:2.2rem;font-weight:700;color:#fff;letter-spacing:-0.01em;margin-bottom:10px;background:linear-gradient(135deg,#fff 0%,#94a3b8 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .section-header .subtitle{font-size:0.95rem;color:var(--muted);max-width:620px;margin:0 auto}
 
 /* ===== INSIGHT GRID ===== */
 .insight-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:0}
 .insight-card{
   background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;
-  padding:28px 22px;transition:all .3s;backdrop-filter:blur(12px);position:relative;
+  padding:28px 22px;transition:all .4s cubic-bezier(.22,1,.36,1);backdrop-filter:blur(12px);position:relative;overflow:hidden;
 }
-.insight-card:hover{border-color:rgba(59,130,246,0.3);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.insight-card::after{content:'';position:absolute;inset:0;border-radius:14px;background:radial-gradient(ellipse at 50% 0%, rgba(59,130,246,0.08) 0%, transparent 60%);opacity:0;transition:opacity .5s}
+.insight-card:hover{border-color:rgba(59,130,246,0.35);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.insight-card:hover::after{opacity:1}
 .insight-card .icon{font-size:1.6rem;margin-bottom:16px;display:block}
 .insight-card h4{font-size:1rem;font-weight:700;color:#fff;margin-bottom:10px}
 .insight-card p{font-size:0.85rem;color:var(--muted);line-height:1.6}
@@ -136,7 +148,12 @@ body{
 .chart-figure{
   margin:0;background:var(--glass);border:1px solid var(--glass-border);
   border-radius:14px;padding:28px;backdrop-filter:blur(12px);
+  transition:transform .4s, border-color .4s, box-shadow .4s;
+  overflow:hidden;position:relative;z-index:1;
 }
+.chart-figure::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--gold),var(--success));opacity:0;transition:opacity .5s}
+.chart-figure:hover{transform:translateY(-3px);border-color:rgba(59,130,246,0.4);box-shadow:0 16px 48px rgba(0,0,0,.4)}
+.chart-figure:hover::after{opacity:1}
 .chart-figure figcaption{font-size:0.9rem;font-weight:700;color:var(--ink2);margin-bottom:20px;letter-spacing:-0.01em}
 .chart-container{width:100%;min-height:420px}
 .chart-container.tall{min-height:540px}
@@ -146,9 +163,11 @@ body{
 .metric-row{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:28px}
 .metric-item{
   background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;
-  padding:24px 18px;text-align:center;backdrop-filter:blur(12px);transition:all .3s;
+  padding:24px 18px;text-align:center;backdrop-filter:blur(12px);transition:all .4s cubic-bezier(.22,1,.36,1);position:relative;overflow:hidden;
 }
-.metric-item:hover{transform:translateY(-2px);border-color:rgba(59,130,246,0.3);box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.metric-item::after{content:'';position:absolute;inset:0;border-radius:14px;background:radial-gradient(ellipse at 50% 0%, rgba(59,130,246,0.06) 0%, transparent 60%);opacity:0;transition:opacity .5s}
+.metric-item:hover{transform:translateY(-4px);border-color:rgba(59,130,246,0.35);box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.metric-item:hover::after{opacity:1}
 .metric-item .label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:8px}
 .metric-item .value{font-size:1.7rem;font-weight:700;color:#fff;font-variant-numeric:tabular-nums}
 .metric-item .delta{font-size:0.78rem;color:var(--success);margin-top:4px}
@@ -164,36 +183,29 @@ table .num{font-family:var(--font-mono);text-align:right}
 table .highlight{color:var(--accent);font-weight:700}
 
 /* ===== CALLOUT ===== */
-.callout{border-left:4px solid var(--accent);background:var(--glass);border-radius:0 12px 12px 0;padding:20px 26px;margin:24px 0;backdrop-filter:blur(12px)}
+.callout{border-left:4px solid var(--accent);background:var(--glass);border-radius:0 12px 12px 0;padding:20px 26px;margin:24px 0;backdrop-filter:blur(12px);transition:transform .3s, box-shadow .3s;position:relative;z-index:1}
+.callout:hover{transform:translateX(4px);box-shadow:0 8px 32px rgba(0,0,0,.3)}
 .callout.gold{border-left-color:var(--gold)}
 .callout.success{border-left-color:var(--success)}
 .callout p{font-size:0.9rem;color:var(--ink2);line-height:1.6}
 .callout strong{color:#fff}
 
-/* ===== ARCH DIAGRAM (CSS, no Mermaid) ===== */
-.arch-diagram{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:24px}
-.arch-layer{background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;padding:24px 20px;text-align:center;backdrop-filter:blur(12px);transition:all .3s}
-.arch-layer:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.3)}
-.arch-layer .layer-icon{font-size:2rem;margin-bottom:12px}
-.arch-layer .layer-title{font-weight:700;font-size:0.95rem;color:#fff;margin-bottom:8px}
-.arch-layer .layer-items{font-size:0.78rem;color:var(--muted);line-height:1.8}
-.arch-layer.accent{border-color:rgba(59,130,246,0.4)}
-.arch-layer.gold{border-color:rgba(245,158,11,0.4)}
-.arch-layer.success{border-color:rgba(16,185,129,0.4)}
-.arch-layer.muted{border-color:rgba(100,116,139,0.4)}
-.arch-arrows{display:flex;justify-content:center;align-items:center;gap:40px;margin:16px 0 28px;color:var(--muted);font-size:1.4rem;letter-spacing:0.3em}
-
 /* ===== STRATEGY CARDS ===== */
 .strategy-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-bottom:24px}
 .strategy-card{
   background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;
-  padding:28px 24px;backdrop-filter:blur(12px);transition:all .3s;position:relative;overflow:hidden;
+  padding:28px 24px;backdrop-filter:blur(12px);transition:all .4s cubic-bezier(.22,1,.36,1);position:relative;overflow:hidden;z-index:1;
 }
 .strategy-card::after{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:14px 0 0 14px}
-.strategy-card:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.strategy-card::before{content:'';position:absolute;inset:0;border-radius:14px;opacity:0;transition:opacity .5s;z-index:-1}
+.strategy-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.4)}
+.strategy-card:hover::before{opacity:1}
 .strategy-card.p0::after{background:var(--danger)}
+.strategy-card.p0:hover::before{background:radial-gradient(ellipse at 30% 50%, rgba(239,68,68,0.1) 0%, transparent 60%)}
 .strategy-card.p1::after{background:var(--gold)}
+.strategy-card.p1:hover::before{background:radial-gradient(ellipse at 30% 50%, rgba(245,158,11,0.1) 0%, transparent 60%)}
 .strategy-card.p2::after{background:var(--accent)}
+.strategy-card.p2:hover::before{background:radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.1) 0%, transparent 60%)}
 .strategy-card .strat-tag{display:inline-block;padding:3px 12px;border-radius:12px;font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px}
 .strategy-card.p0 .strat-tag{background:rgba(239,68,68,0.15);color:var(--danger)}
 .strategy-card.p1 .strat-tag{background:rgba(245,158,11,0.15);color:var(--gold)}
@@ -213,17 +225,13 @@ table .highlight{color:var(--accent);font-weight:700}
 .reveal-delay-4{transition-delay:.4s}
 
 /* ===== FOOTER ===== */
-footer{border-top:1px solid var(--rule);padding:48px 24px;text-align:center;font-size:0.82rem;color:var(--muted);background:var(--bg2)}
-footer .sources{max-width:var(--max);margin:0 auto 32px;text-align:left}
-footer .sources h2{font-size:1rem;font-weight:700;color:#fff;margin-bottom:14px}
-footer .sources ol{padding-left:1.2rem;font-size:0.8rem;color:var(--muted)}
-footer .sources li{margin-bottom:.6rem;overflow-wrap:break-word}
-footer .sources .src-url{display:block;margin-top:.2rem;font-size:.76rem;color:var(--accent);word-break:break-all}
+footer{border-top:1px solid var(--rule);padding:32px 24px;text-align:center;font-size:0.82rem;color:var(--muted);background:var(--bg2);position:relative;z-index:1}
+footer p{opacity:0.7}
 
 /* ===== RESPONSIVE ===== */
 @media(max-width:1100px){
   .kpi-grid,.insight-grid{grid-template-columns:repeat(2,1fr)}
-  .two-col,.two-col-3-7,.arch-diagram,.strategy-grid{grid-template-columns:1fr}
+  .two-col,.two-col-3-7,.strategy-grid{grid-template-columns:1fr}
   .metric-row{grid-template-columns:repeat(2,1fr)}
   .chart-container{min-height:380px}
   .chart-container.tall{min-height:460px}
@@ -241,6 +249,9 @@ footer .sources .src-url{display:block;margin-top:.2rem;font-size:.76rem;color:v
 </head>
 <body>
 
+<!-- Particle Canvas -->
+<canvas id="particles-canvas"></canvas>
+
 <!-- NAV -->
 <nav class="topnav">
   <div class="topnav-inner">
@@ -251,8 +262,6 @@ footer .sources .src-url{display:block;margin-top:.2rem;font-size:.76rem;color:v
     <a href="#product">商品分析</a>
     <a href="#prediction">购买预测</a>
     <a href="#business">业务策略</a>
-    <a href="#deployment">技术架构</a>
-    <a href="#limitations">改进路线</a>
   </div>
 </nav>
 
@@ -443,57 +452,8 @@ footer .sources .src-url{display:block;margin-top:.2rem;font-size:.76rem;color:v
   </div>
 </section>
 
-<!-- SECTION 6: DEPLOYMENT -->
-<section class="section" id="deployment">
-  <div class="section-inner">
-    <div class="section-header">
-      <div class="section-num">Section 06</div>
-      <h2>技术架构</h2>
-      <p class="subtitle">从离线分析到在线推理，完整的技术栈与部署架构。</p>
-    </div>
-
-    <div class="arch-diagram reveal">
-      <div class="arch-layer accent"><div class="layer-icon">🗄️</div><div class="layer-title">数据层</div><div class="layer-items">行为日志采集<br>特征工程 Pipeline<br>Feature Store</div></div>
-      <div class="arch-layer gold"><div class="layer-icon">⚙️</div><div class="layer-title">训练层</div><div class="layer-items">XGBoost 模型训练<br>模型评估 & CV<br>Model Registry</div></div>
-      <div class="arch-layer success"><div class="layer-icon">🚀</div><div class="layer-title">推理层</div><div class="layer-items">实时特征查询<br>模型推理 API<br>推荐排序服务</div></div>
-      <div class="arch-layer muted"><div class="layer-icon">📡</div><div class="layer-title">监控层</div><div class="layer-items">数据漂移检测<br>模型性能监控<br>业务指标看板</div></div>
-    </div>
-    <div class="arch-arrows reveal">数据层 → 训练层 → 推理层 ⇄ 监控层</div>
-
-    <div class="callout reveal"><p><strong>技术栈：</strong>Python (Pandas / NumPy / scikit-learn / XGBoost) → 特征工程 + 模型训练 · statsmodels → GEE + PSM 因果推断 · ECharts → 可视化 · GitHub Pages → 部署。推荐后续演进：引入商品属性特征 → 在线学习框架 → AB实验闭环。</p></div>
-  </div>
-</section>
-
-<!-- SECTION 7: LIMITATIONS -->
-<section class="section alt" id="limitations">
-  <div class="section-inner">
-    <div class="section-header">
-      <div class="section-num">Section 07</div>
-      <h2>局限性与改进路线</h2>
-      <p class="subtitle">坦诚面对当前分析的边界，明确下一步改进方向。</p>
-    </div>
-
-    <div class="insight-grid reveal">
-      <div class="insight-card"><span class="icon">⚠️</span><h4>数据局限</h4><p>仅含行为数据，缺少商品属性（价格、品牌、类目深度）、用户画像。68.1% 预测正样本无交互，冷启动问题突出。</p></div>
-      <div class="insight-card"><span class="icon">⚠️</span><h4>因果局限</h4><p>无商品价格字段，无法排除价格混淆效应。PSM仅控制可观测混杂，未观测混杂（如价格敏感度）可能影响ATE。</p></div>
-      <div class="insight-card"><span class="icon">⚠️</span><h4>落地局限</h4><p>ATE是群体平均效应，不等于个体策略效果。策略需通过AB实验验证，离线结论不可直接作为线上预期。</p></div>
-    </div>
-
-    <div class="callout gold reveal" style="margin-top:24px"><p><strong>改进路线图：</strong>Phase 1（短期）→ 引入商品属性特征，解决68.1%冷启动问题 · Phase 2（中期）→ AB实验验证因果效应，分别评估大促期与日常期ATE · Phase 3（长期）→ 在线学习框架 + 实时特征 + 促销日历特征。</p></div>
-  </div>
-</section>
-
 <!-- FOOTER -->
 <footer>
-  <div class="sources">
-    <h2>数据来源与参考</h2>
-    <ol>
-      <li><span>天池竞赛 — 阿里移动推荐算法数据集. 2014.11.18–12.18, 10,000用户 × 2,876,947商品 × 12,256,906行为事件.</span><span class="src-url">https://tianchi.aliyun.com/dataset/</span></li>
-      <li><span>Chen, T. & Guestrin, C. XGBoost: A Scalable Tree Boosting System. KDD 2016.</span><span class="src-url">https://arxiv.org/abs/1603.02754</span></li>
-      <li><span>Rosenbaum, P.R. & Rubin, D.B. The Central Role of the Propensity Score. Biometrika 1983.</span><span class="src-url">https://doi.org/10.1093/biomet/70.1.41</span></li>
-      <li><span>Liang, K.Y. & Zeger, S.L. Longitudinal Data Analysis Using Generalized Linear Models. Biometrika 1986.</span><span class="src-url">https://doi.org/10.1093/biomet/73.1.13</span></li>
-    </ol>
-  </div>
   <div class="copyright"><p>© 2026 · Ali Mobile Recommendation Analytics Dashboard · Built with ECharts</p></div>
 </footer>
 
@@ -523,6 +483,87 @@ footer .sources .src-url{display:block;margin-top:.2rem;font-size:.76rem;color:v
     navLinks.forEach(function(a){
       a.classList.toggle('active', a.getAttribute('href') === '#' + current);
     });
+  });
+})();
+
+// Floating particles background
+(function(){
+  var canvas = document.getElementById('particles-canvas');
+  var ctx = canvas.getContext('2d');
+  var particles = [];
+  var accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+  var accent2 = getComputedStyle(document.documentElement).getPropertyValue('--accent2').trim();
+  var success = getComputedStyle(document.documentElement).getPropertyValue('--success').trim();
+  
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+  
+  function createParticle() {
+    return {
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.5 + 0.5,
+      vx: (Math.random() - 0.5) * 0.2,
+      vy: (Math.random() - 0.5) * 0.2,
+      color: [accent, accent2, success][Math.floor(Math.random() * 3)]
+    };
+  }
+  
+  for (var i = 0; i < 80; i++) {
+    particles.push(createParticle());
+  }
+  
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(function(p) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = 0.3;
+      ctx.fill();
+      
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0) p.x = canvas.width;
+      if (p.x > canvas.width) p.x = 0;
+      if (p.y < 0) p.y = canvas.height;
+      if (p.y > canvas.height) p.y = 0;
+    });
+    
+    // Draw connections
+    particles.forEach(function(p1, i) {
+      particles.slice(i + 1).forEach(function(p2) {
+        var dx = p1.x - p2.x;
+        var dy = p1.y - p2.y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 80) {
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.strokeStyle = p1.color;
+          ctx.globalAlpha = 0.1 * (1 - dist / 80);
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      });
+    });
+    
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+  
+  // Parallax on mouse move
+  var hero = document.querySelector('.hero');
+  document.addEventListener('mousemove', function(e) {
+    var x = (e.clientX / window.innerWidth - 0.5) * 20;
+    var y = (e.clientY / window.innerHeight - 0.5) * 10;
+    if (hero) {
+      hero.style.transform = 'translateY(' + y * 0.3 + 'px) translateX(' + x * 0.2 + 'px)';
+    }
   });
 })();
 </script>
