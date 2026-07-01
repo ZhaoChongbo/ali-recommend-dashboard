@@ -470,24 +470,52 @@ var featureVals = [0.1371, 0.1222, 0.1219, 0.1130, 0.0757, 0.0597, 0.0495, 0.048
   })();
 
   // ==========================================
-  // Chart 14: PSM Matching Balance (SMD Love Plot)
-  // Data: causal_inference_results.csv — 加购→购买, 卡尺0.05
+  // Chart 14: PSM ATE Comparison (Dumbbell + Forest Plot)
+  // Data: causal_inference_results.csv — 加购→购买 vs 收藏→购买
   // ==========================================
   (function() {
     var el = document.getElementById('chart-psm-match');
     if (!el) return;
     var chart14 = echarts.init(el, null, { renderer: 'svg' });
+    // ATE: [lowerCI, ATE, upperCI, yIndex, isSig]
+    var cartData  = [2.35, 6.76, 10.58, 0, 1]; // 加购→购买: significant
+    var favData   = [-0.49, 4.11, 8.82, 1, 0]; // 收藏→购买: not significant
+
     chart14.setOption({
       animation: false,
-      tooltip: { trigger: 'axis', appendToBody: true, backgroundColor: bg3, borderColor: rule, textStyle: { color: ink }, formatter: function(p) { return p[0].name + '<br/>匹配前 SMD: ' + p[0].data[0].toFixed(3) + '<br/>匹配后 SMD: ' + p[0].data[1].toFixed(3); } },
-      legend: { data: ['匹配前', '匹配后'], bottom: 0, textStyle: { color: muted, fontSize: 11 } },
-      grid: { left: 120, right: 30, top: 30, bottom: 48 },
-      xAxis: { type: 'value', name: 'SMD', nameTextStyle: { color: muted }, axisLabel: { color: muted, fontSize: 10 }, splitLine: { lineStyle: { color: rule } }, axisLine: { lineStyle: { color: rule } }, min: 0, max: 0.5 },
-      yAxis: { type: 'category', data: ['fav_days', 'browse_days', 'active_days'], axisLabel: { color: ink2, fontSize: 12, fontWeight: 700 }, axisLine: { lineStyle: { color: rule } } },
+      tooltip: { trigger: 'item', appendToBody: true, backgroundColor: bg3, borderColor: rule, textStyle: { color: ink }, formatter: function(p) {
+        if (p.seriesType === 'custom') {
+          var d = p.data; return d.name + '<br/>ATE: +' + d.value[1].toFixed(2) + 'pp<br/>95% CI: [' + d.value[0].toFixed(2) + ', ' + d.value[2].toFixed(2) + ']';
+        }
+        return '';
+      }},
+      grid: { left: 120, right: 60, top: 40, bottom: 30 },
+      xAxis: { type: 'value', name: 'ATE (pp)', nameTextStyle: { color: muted, fontSize: 11 }, axisLabel: { color: muted, fontSize: 10, formatter: '{value}pp' }, splitLine: { lineStyle: { color: rule } }, axisLine: { lineStyle: { color: rule } }, min: -4, max: 14 },
+      yAxis: { type: 'category', data: ['加购→购买', '收藏→购买'], axisLabel: { color: ink2, fontSize: 13, fontWeight: 700 }, axisLine: { lineStyle: { color: rule } }, inverse: true },
       series: [
-        { name: '匹配前', type: 'bar', data: [[0.312, 0.042], [0.287, 0.038], [0.245, 0.031]], barWidth: 16, itemStyle: { color: danger + '99', borderRadius: [0, 4, 4, 0] }, label: { show: true, position: 'right', color: muted, fontSize: 10, fontFamily: 'JetBrainsMono', formatter: function(p) { return p.data[0].toFixed(3); } } },
-        { name: '匹配后', type: 'bar', data: [[0.042, 0.042], [0.038, 0.038], [0.031, 0.031]], barWidth: 16, itemStyle: { color: success, borderRadius: [0, 4, 4, 0] }, label: { show: true, position: 'right', color: success, fontSize: 10, fontFamily: 'JetBrainsMono', formatter: function(p) { return p.data[0].toFixed(3); } } },
-        { type: 'scatter', data: [[0.1, 0], [0.1, 1], [0.1, 2]], symbolSize: 0, markLine: { silent: true, symbol: 'none', lineStyle: { color: rule, type: 'dashed', width: 1 }, label: { color: muted, fontSize: 10, formatter: 'SMD=0.1' }, data: [{ xAxis: 0.1 }] } }
+        { type: 'bar', data: [{value: 6.76, name: '加购→购买'}, {value: 4.11, name: '收藏→购买'}], barWidth: 22, itemStyle: { color: function(p) { return p.dataIndex === 0 ? success + 'cc' : muted + '88'; }, borderRadius: [0, 6, 6, 0] }, label: { show: true, position: 'right', color: '#fff', fontSize: 13, fontWeight: 700, fontFamily: 'JetBrainsMono', formatter: function(p) { return '+'+p.value+'pp'; }, distance: 10 }, z: 1 },
+        {
+          type: 'custom',
+          z: 2,
+          renderItem: function(params, api) {
+            var d = api.value(0);
+            var isSig = d[4];
+            var y = api.coord([0, d[3]])[1];
+            var x1 = api.coord([d[0], d[3]])[0];
+            var x2 = api.coord([d[2], d[3]])[0];
+            var xm = api.coord([d[1], d[3]])[0];
+            var color = isSig ? success : muted;
+            return {
+              type: 'group',
+              children: [
+                { type: 'line', shape: { x1: x1, y1: y, x2: x2, y2: y }, style: { stroke: color, lineWidth: 3, lineCap: 'round' } },
+                { type: 'circle', shape: { cx: xm, cy: y, r: 7 }, style: { fill: color, stroke: '#fff', lineWidth: 2 } }
+              ]
+            };
+          },
+          data: [{ name: '加购→购买', value: cartData }, { name: '收藏→购买', value: favData }]
+        },
+        { type: 'scatter', data: [[0, 0], [0, 1]], symbolSize: 0, markLine: { silent: true, symbol: 'none', lineStyle: { color: rule, type: 'dashed', width: 1.5 }, label: { color: muted, fontSize: 10, formatter: 'ATE=0' }, data: [{ xAxis: 0 }] }, z: 0 }
       ]
     });
     window.addEventListener('resize', function() { chart14.resize(); });
