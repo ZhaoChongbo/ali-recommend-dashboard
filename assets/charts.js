@@ -521,4 +521,89 @@ var featureVals = [0.1371, 0.1222, 0.1219, 0.1130, 0.0757, 0.0597, 0.0495, 0.048
     window.addEventListener('resize', function() { chart14.resize(); });
   })();
 
+  // ==========================================
+  // Chart 15: Apriori 关联规则 — Top 10 提升度
+  // Data: apriori_category_rules.csv
+  // ==========================================
+  (function() {
+    var el = document.getElementById('chart-apriori-lift');
+    if (!el) return;
+    var chart15 = echarts.init(el, null, { renderer: 'svg' });
+    chart15.setOption({
+      animation: false,
+      tooltip: { trigger: 'axis', appendToBody: true, backgroundColor: bg3, borderColor: rule, textStyle: { color: ink }, formatter: function(p) { return p[0].name + '<br/>提升度: ' + p[0].value.toFixed(2); } },
+      grid: { left: 130, right: 60, top: 20, bottom: 30 },
+      xAxis: { type: 'value', name: '提升度 (Lift)', nameTextStyle: { color: muted, fontSize: 10 }, axisLabel: { color: muted, fontSize: 10 }, splitLine: { lineStyle: { color: rule } }, axisLine: { lineStyle: { color: rule } } },
+      yAxis: { type: 'category', data: ['9516→10661', '5271→9516', '8877→2901', '10507→3424', '2825→10894', '5894→14079', '5894→2825', '13230→5894', '2825→6513', '13230→14079'], inverse: true, axisLabel: { color: ink2, fontSize: 11, fontWeight: 700 }, axisLine: { lineStyle: { color: rule } } },
+      series: [{
+        type: 'bar',
+        data: [
+          { value: 10.22, itemStyle: { color: success } },
+          { value: 7.94, itemStyle: { color: success } },
+          { value: 7.25, itemStyle: { color: success } },
+          { value: 5.10, itemStyle: { color: accent2 } },
+          { value: 4.72, itemStyle: { color: accent2 } },
+          { value: 4.03, itemStyle: { color: accent } },
+          { value: 3.91, itemStyle: { color: accent } },
+          { value: 3.88, itemStyle: { color: accent } },
+          { value: 3.82, itemStyle: { color: accent } },
+          { value: 3.77, itemStyle: { color: accent } }
+        ],
+        barWidth: 18,
+        label: { show: true, position: 'right', color: ink2, fontSize: 11, fontFamily: 'JetBrainsMono', formatter: '{c}' },
+        itemStyle: { borderRadius: [0, 4, 4, 0] },
+        markLine: { silent: true, symbol: 'none', lineStyle: { color: rule, type: 'dashed', width: 1 }, label: { color: muted, fontSize: 10, formatter: 'Lift=1 (无关联)' }, data: [{ xAxis: 1 }] }
+      }]
+    });
+    window.addEventListener('resize', function() { chart15.resize(); });
+  })();
+
+  // ==========================================
+  // Chart 16: Apriori 全量规则 — 支持度 vs 提升度散点图
+  // Data: apriori_category_rules.csv (181 rules)
+  // ==========================================
+  (function() {
+    var el = document.getElementById('chart-apriori-scatter');
+    if (!el) return;
+    var chart16 = echarts.init(el, null, { renderer: 'svg' });
+    // Real data from apriori_category_rules.csv (sampled ~50 rules for rendering)
+    var scatterData = [
+      [1.05, 10.22, '9516→10661'], [1.05, 10.22, '10661→9516'], [1.08, 7.94, '5271→9516'], [1.08, 7.94, '9516→5271'],
+      [1.59, 7.25, '8877→2901'], [1.59, 7.25, '2901→8877'], [1.16, 5.10, '10507→3424'], [1.16, 5.10, '3424→10507'],
+      [1.46, 4.72, '2825→10894'], [1.46, 4.72, '10894→2825'], [1.14, 4.03, '14079→5894'], [1.14, 4.03, '5894→14079'],
+      [1.24, 3.91, '2825→5894'], [1.24, 3.91, '5894→2825'], [1.68, 3.88, '13230→5894'], [1.68, 3.88, '5894→13230'],
+      [1.40, 3.82, '2825→6513'], [1.40, 3.82, '6513→2825'], [0.99, 3.77, '13230→14079'], [0.99, 3.77, '14079→13230'],
+      [1.10, 3.74, '2825→13230'], [1.10, 3.74, '13230→2825'], [1.02, 3.70, '5894→5689'], [1.02, 3.70, '5689→5894'],
+      [0.99, 3.59, '14079→10894'], [0.99, 3.59, '10894→14079'], [1.29, 3.49, '4370→10894'], [1.29, 3.49, '10894→4370'],
+      [1.11, 3.42, '14079→6513'], [1.11, 3.42, '6513→14079'], [1.24, 3.37, '2825→1863'], [1.24, 3.37, '1863→2825'],
+      [1.15, 3.36, '5894→6513'], [1.15, 3.36, '6513→5894'], [1.14, 3.35, '13230→6513'], [1.14, 3.35, '6513→13230'],
+      [1.01, 3.34, '5689→10894'], [1.01, 3.34, '10894→5689'], [1.01, 3.33, '5418→5894'], [1.01, 3.33, '5894→5418'],
+      [1.13, 3.32, '13230→10894'], [1.13, 3.32, '10894→13230'], [1.01, 3.28, '2825→5689'], [1.01, 3.28, '5689→2825'],
+      [1.04, 3.28, '5894→10894'], [1.04, 3.28, '10894→5894'], [1.24, 3.22, '2825→14079'], [1.24, 3.22, '14079→2825'],
+      [1.03, 3.08, '5894→4370'], [1.03, 3.08, '4370→5894'], [1.12, 3.07, '2825→4370'], [1.12, 3.07, '4370→2825'],
+      [1.01, 2.98, '13230→5689'], [1.01, 2.98, '5689→13230'], [1.01, 2.97, '5894→1863'], [1.01, 2.97, '1863→5894'],
+      [1.01, 2.85, '2825→5418'], [1.01, 2.85, '5418→2825'], [1.01, 2.74, '13230→4370'], [1.01, 2.74, '4370→13230'],
+      [1.01, 2.72, '13230→1863'], [1.01, 2.72, '1863→13230'], [1.01, 2.68, '2825→3424'], [1.01, 2.68, '3424→2825'],
+      [1.01, 2.65, '5894→3424'], [1.01, 2.65, '3424→5894'], [1.01, 2.58, '13230→3424'], [1.01, 2.58, '3424→13230'],
+      [1.01, 2.52, '13230→5418'], [1.01, 2.52, '5418→13230'], [1.01, 2.51, '2825→5027'], [1.01, 2.51, '5027→2825'],
+      [1.01, 2.48, '5894→5027'], [1.01, 2.48, '5027→5894'], [1.01, 2.47, '13230→5027'], [1.01, 2.47, '5027→13230']
+    ];
+    chart16.setOption({
+      animation: false,
+      tooltip: { appendToBody: true, backgroundColor: bg3, borderColor: rule, textStyle: { color: ink }, formatter: function(p) { return p.data[2] + '<br/>支持度: ' + p.data[0] + '%<br/>提升度: ' + p.data[1]; } },
+      grid: { left: 80, right: 30, top: 20, bottom: 30 },
+      xAxis: { type: 'value', name: '支持度 (%)', nameTextStyle: { color: muted, fontSize: 10 }, axisLabel: { color: muted, fontSize: 10 }, splitLine: { lineStyle: { color: rule } }, axisLine: { lineStyle: { color: rule } } },
+      yAxis: { type: 'value', name: '提升度 (Lift)', nameTextStyle: { color: muted, fontSize: 10 }, axisLabel: { color: muted, fontSize: 10 }, splitLine: { lineStyle: { color: rule } }, axisLine: { lineStyle: { color: rule } } },
+      series: [{
+        type: 'scatter',
+        symbolSize: function(val) { return Math.max(6, Math.min(16, val[0] * 4)); },
+        data: scatterData,
+        itemStyle: { color: accent2, opacity: 0.75 },
+        emphasis: { itemStyle: { color: success, opacity: 1 } },
+        markLine: { silent: true, symbol: 'none', lineStyle: { color: rule, type: 'dashed', width: 1 }, label: { color: muted, fontSize: 10, formatter: 'Lift=1' }, data: [{ yAxis: 1 }] }
+      }]
+    });
+    window.addEventListener('resize', function() { chart16.resize(); });
+  })();
+
 })();
