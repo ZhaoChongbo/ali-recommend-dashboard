@@ -402,6 +402,45 @@ footer p{opacity:0.7}
     </div>
 
     <div class="callout reveal"><p><strong>关键洞察：</strong>品类1863转化率最高（20.88%），但5232和6344仅差约1个百分点，并非1863一家独大。建议提取三个品类的共同商品属性，建立「高转化商品画像」指导选品。品类13230浏览最多但转化率最低——高浏览≠高转化。</p></div>
+
+    <!-- 关联规则分析 -->
+    <div class="section-header" style="margin-top:60px;margin-bottom:32px">
+      <div class="section-num">关联规则</div>
+      <h2 style="font-size:1.5rem">品类关联规则 · Apriori</h2>
+      <p class="subtitle">以用户为单位构建购物篮，挖掘品类间共现关系。支持度≥1%、置信度≥10%、提升度≥1.1，共筛选 181 条有效规则。</p>
+    </div>
+
+    <div class="two-col reveal">
+      <figure class="chart-figure">
+        <figcaption>Top 10 关联规则 — 提升度（Lift）排序</figcaption>
+        <div id="chart-apriori-lift" class="chart-container" style="min-height:420px"></div>
+      </figure>
+      <figure class="chart-figure">
+        <figcaption>全量规则分布 — 支持度 vs 提升度</figcaption>
+        <div id="chart-apriori-scatter" class="chart-container" style="min-height:420px"></div>
+      </figure>
+    </div>
+
+    <div class="table-wrap reveal">
+      <table>
+        <thead><tr><th>前件品类</th><th>→</th><th>后件品类</th><th>支持度</th><th>共现用户</th><th>置信度</th><th>提升度</th><th>策略含义</th></tr></thead>
+        <tbody>
+          <tr><td class="highlight">9516</td><td>→</td><td class="highlight">10661</td><td class="num">1.05%</td><td class="num">93</td><td class="num">21.04%</td><td class="num highlight">10.22</td><td>小众强关联，精准推荐</td></tr>
+          <tr><td>5271</td><td>→</td><td>9516</td><td class="num">1.08%</td><td class="num">96</td><td class="num">39.51%</td><td class="num highlight">7.94</td><td>高置信度，搭配推荐</td></tr>
+          <tr><td>8877</td><td>→</td><td>2901</td><td class="num">1.59%</td><td class="num">141</td><td class="num">22.85%</td><td class="num highlight">7.25</td><td>中等覆盖，搭配推荐</td></tr>
+          <tr><td>10507</td><td>→</td><td>3424</td><td class="num">1.16%</td><td class="num">103</td><td class="num">40.55%</td><td class="num">5.10</td><td>高置信度，搭配推荐</td></tr>
+          <tr><td>2825</td><td>→</td><td>10894</td><td class="num">1.46%</td><td class="num">130</td><td class="num">31.48%</td><td class="num">4.72</td><td>中等覆盖</td></tr>
+          <tr><td><span class="highlight">5894</span></td><td>→</td><td>14079</td><td class="num">1.14%</td><td class="num">101</td><td class="num">16.69%</td><td class="num">4.03</td><td>关联中枢，带动多品类</td></tr>
+          <tr><td><span class="highlight">5894</span></td><td>→</td><td>2825</td><td class="num">1.24%</td><td class="num">110</td><td class="num">18.18%</td><td class="num">3.91</td><td>关联中枢，带动多品类</td></tr>
+          <tr><td>13230</td><td>→</td><td><span class="highlight">5894</span></td><td class="num">1.68%</td><td class="num">149</td><td class="num">26.42%</td><td class="num">3.88</td><td>引导品类→高转化品类</td></tr>
+          <tr><td>2825</td><td>→</td><td>6513</td><td class="num">1.40%</td><td class="num">124</td><td class="num">30.02%</td><td class="num">3.82</td><td>6513也是GEE高转化品类</td></tr>
+          <tr><td>13230</td><td>→</td><td>14079</td><td class="num">0.99%</td><td class="num">88</td><td class="num">15.60%</td><td class="num">3.77</td><td>引导品类→引导品类</td></tr>
+          <tr><td colspan="8" style="color:var(--muted);font-size:0.78rem">5894 是"关联中枢"品类，同时与2825、13230、14079强关联，且自身为GEE高转化品类。13230虽为"高流量低转化"，但与5894的关联提升度达3.88——可作为引导品类，先吸引流量再交叉推荐5894转化。</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout reveal gold"><p><strong>关联洞察：</strong>品类5894同时出现在GEE高转化榜和关联规则中枢位置，是理想的"钩子品类"——既能独立驱动购买，又能带动其他品类。品类9516↔10661提升度10.22但覆盖仅1%，适合精准推荐而非全量。13230虽自身转化低，但可作为引导品类，先推13230吸引流量，再交叉推荐5894完成转化。</p></div>
   </div>
 </section>
 
